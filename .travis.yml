@@ -1,0 +1,22 @@
+sudo: required
+services:
+    - docker
+
+before_istall:
+    - docker build -t donwor/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true donwor/react-test npm test
+
+after_success:
+    - docker build -t donwor/multi-client ./client
+    - docker build -t donwor/multi-nginx ./nginx
+    - docker build -t donwor/multi-server ./server
+    - docker build -t donwor/multi-worker ./worker
+    # Login to docker cli
+    - echo "$DOCKER_PASSWORD"  | docker login -u "$DOCKER_ID" --password-stdin
+    # push images to docker hub
+    - docker push donwor/multi-client
+    - docker push donwor/multi-nginx
+    - docker push donwor/multi-server
+    - docker push donwor/multi-worker
