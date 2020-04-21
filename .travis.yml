@@ -20,3 +20,17 @@ after_success:
     - docker push donwor/multi-nginx
     - docker push donwor/multi-server
     - docker push donwor/multi-worker
+
+deploy:
+    edge: true
+    provider: elasticbeanstalk
+    region: eu-west-3
+    app: multi-docker
+    env: MultiDocker-env
+    bucket_name: elasticbeanstalk-eu-west-3-392527698913
+    bucket_path: docker-multi
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    
